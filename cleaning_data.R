@@ -40,9 +40,21 @@ upshot_hou <- filter(upshot, office == "House")
 ## looking at the file party vs the response for this election to check for
 ## any flips in response. TODO: calculate the percentages
 upshot_hou %>% 
-  select(file_party, response, state, wave, district, office) %>% 
-  count(file_party, response, district) %>% 
-  ggplot(aes(x = state))
+  select(file_party, response, state, wave, district) %>% 
+  mutate(response = recode(response, 
+                            "Dem" = "Democratic",
+                            "Rep" = "Republican",
+                            "Und" = "Other"),
+         flip = case_when((file_party == "Republican" & response == "Democratic") ~ TRUE,
+                          (file_party == "Democratic" & response == "Republican") ~ TRUE)) %>% 
+  group_by(district, wave, file_party) %>% 
+  count(flip) %>% 
+  group_by(district) %>% 
+  mutate(total = sum(n),
+         vot_per = n / total) %>% 
+  filter(flip == TRUE) %>% 
+  ggplot(aes(x = district, y = vot_per, color = file_party)) + 
+  geom_point()
   
 
 
