@@ -75,7 +75,8 @@ flipped_sen <- upshot_sen %>%
   group_by(source) %>% 
   mutate(total = sum(n),
          state = toupper(str_sub(source, 1, 2)),
-         wave = str_sub(source, -1, -1)) %>% 
+         wave = str_sub(source, -1, -1),
+         district = state) %>% 
   group_by(source, file_party) %>% 
   mutate(vot_per = case_when(file_party == "Republican" ~  n / total,
                              file_party == "Democratic" ~ -n / total)) %>%
@@ -96,7 +97,8 @@ flipped_gov <- upshot_gov %>%
   group_by(source) %>% 
   mutate(total = sum(n),
          state = toupper(str_sub(source, 1, 2)),
-         wave = str_sub(source, -1, -1)) %>% 
+         wave = str_sub(source, -1, -1),
+         district = state) %>% 
   group_by(source, file_party) %>% 
   mutate(vot_per = case_when(file_party == "Republican" ~  n / total,
                              file_party == "Democratic" ~ -n / total)) %>%
