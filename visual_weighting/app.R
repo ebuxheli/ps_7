@@ -30,14 +30,13 @@ ui <- fluidPage(
       # checkbox with the party
       checkboxGroupInput("data_party", 
                   h3("Party:"), 
-                  choices = c("Democratic", "Republican")),
+                  choices = c("Democratic", "Republican"),
+                  select = c("Democratic", "Republican")),
       
       # selection bar with the office
       selectInput("data_office", 
                   h3("Office:"), 
-                  choices = c("House"    = "hou", 
-                              "Senate"   = "sen", 
-                              "Governor" = "gov"))
+                  choices = c("House"    = "hou"))
     ),
     # shows panels
     mainPanel(
@@ -52,7 +51,7 @@ ui <- fluidPage(
 server <- function(input, output) {
   output$plot1 <- renderPlotly({
     # filtering data from input
-    flip_FILTER <- filter(get(input$data_office), file_party %in% c(input$data_party))
+    flip_FILTER <- hou %>% filter(file_party %in% c(input$data_party))
     
     # plotting the filtered data using plotly
     flip_FILTER %>%
