@@ -1,0 +1,12 @@
+name: ps_7
+title: ps_7
+username:
+account: enxhi
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 584960
+bundleId: 1715108
+url: https://enxhi.shinyapps.io/ps_7/
+when: 1542898724.17482
+asMultiple: FALSE
+asStatic: FALSE

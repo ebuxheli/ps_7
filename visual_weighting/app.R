@@ -52,16 +52,18 @@ ui <- fluidPage(
 server <- function(input, output) {
   output$plot1 <- renderPlotly({
     # filtering data from input
-    flip_FILTER <- filter(input$data_office, file_party %in% c(input$data_party))
+    flip_FILTER <- filter(get(input$data_office), file_party %in% c(input$data_party))
     
-    ggplotly(tooltip = c("text"),
-             ggplot(data = flip_FILTER, 
-                    aes_string(x = state, y = vot_per, text = district, color = file_party)) + 
-               geom_point(position = "jitter") +
-               labs(x = "State", 
-                    y = "Democratic Advantage Flips", 
-                    title = paste("Percent of Flips in Each Voting District")) +
-               scale_color_manual(name = "Party", values = c("blue", "red"))) %>% 
+    # plotting the filtered data using plotly
+    flip_FILTER %>%
+      plot_ly(x = ~district, y = ~vot_per, color = ~file_party, type = "scatter",
+              hoverinfo = 'text',
+              text = ~paste('District: ', district,
+                            '\n Percent: ', scales::percent(vot_per))) %>%
+      layout(title = "Percent of Flips in Each Voting District, 2018 Midterms",
+             xaxis = list(title = "District"),
+             yaxis = list(title = "Democratic Advantage Percentage",
+                          tickformat = "%")) %>% 
       config(displayModeBar = FALSE)
   }) 
   
@@ -78,17 +80,7 @@ server <- function(input, output) {
     
     HTML(paste(h3(str1), p(str2), h3(str3), p(str4)))})
     
-    # # plotting the filtered data using plotly
-    # flip_FILTER %>% 
-    #   filter(metric == "Expected" | metric == "Actual") %>% 
-    #   plot_ly(x = ~district, y = ~percent, color = ~metric, type = "scatter", 
-    #           hoverinfo = 'text',
-    #           text = ~paste('District: ', district,
-    #                         '\n Percent: ', scales::percent(percent))) %>% 
-    #   layout(title = "2018 Midterm Elections: Republican Advantage",
-    #          xaxis = list(title = "District"),
-    #          yaxis = list(title = "Republican Advantage Percentage",
-    #                       tickformat = "%"))
+
 }
 
 # Run the application 
