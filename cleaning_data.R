@@ -2,8 +2,10 @@
 library(tidyverse)
 library(fs)
 library(dplyr)
+library(stringr)
+library(ggplot2)
 
-#### TEMP COMMENT SO FILES AREN'T REDOWNLOADED
+# ### TEMP COMMENT SO FILES AREN'T REDOWNLOADED
 # # getting upshot data
 # download.file(url = "https://goo.gl/ZRCBda",
 #               destfile = "upshot.zip",
@@ -35,19 +37,13 @@ upshot_gov <- filter(upshot, office == "Governor")
 upshot_hou <- filter(upshot, office == "House")
 
 
-### observing which demographics are associated with a greater final weight
-upshot_sen %>%
-  ggplot2::ggplot(aes(x = ager, y = final_weight)) +
-  ggplot2::geom_boxplot()
-
-## observing how location effects weighting
-upshot_sen %>% 
-  ggplot2::ggplot(aes(x = ager, y = final_weight, color = district)) +
-  ggplot2::geom_boxplot()
-
-## calculate the spread of the weighting
-
-
+## looking at the file party vs the response for this election to check for
+## any flips in response. TODO: calculate the percentages
+upshot_hou %>% 
+  select(file_party, response, state, wave, district, office) %>% 
+  count(file_party, response, district) %>% 
+  ggplot(aes(x = state))
+  
 
 
 
