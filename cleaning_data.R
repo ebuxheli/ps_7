@@ -37,25 +37,69 @@ upshot_gov <- filter(upshot, office == "Governor")
 upshot_hou <- filter(upshot, office == "House")
 
 
-## looking at the file party vs the response for this election to check for
-## any flips in response. TODO: calculate the percentages
-upshot_hou %>% 
-  select(file_party, response, state, wave, district) %>% 
+## looking at the file party vs the response for the house election to check for
+## any flips in response. 
+flipped_hou <- upshot_hou %>% 
+  select(source, file_party, response) %>% 
   mutate(response = recode(response, 
                             "Dem" = "Democratic",
                             "Rep" = "Republican",
                             "Und" = "Other"),
          flip = case_when((file_party == "Republican" & response == "Democratic") ~ TRUE,
                           (file_party == "Democratic" & response == "Republican") ~ TRUE)) %>% 
-  group_by(district, wave, file_party) %>% 
+  group_by(source, file_party) %>% 
   count(flip) %>% 
-  group_by(district) %>% 
+  group_by(source) %>% 
   mutate(total = sum(n),
-         vot_per = n / total) %>% 
-  filter(flip == TRUE) %>% 
-  ggplot(aes(x = district, y = vot_per, color = file_party)) + 
-  geom_point()
-  
+         state = toupper(str_sub(source, 1, 2)),
+         district = paste0(state, "-", parse_number(str_sub(source, 2, 4))),
+         wave = str_sub(source, -1, -1)) %>% 
+  group_by(source, file_party) %>% 
+  mutate(rep_per = n / total) %>% 
+  filter(flip == TRUE) 
 
+## looking at the file party vs the response for the senate election to check for
+## any flips in response. 
+flipped_sen <- upshot_sen %>% 
+  select(source, file_party, response) %>% 
+  mutate(response = recode(response, 
+                           "Dem" = "Democratic",
+                           "Rep" = "Republican",
+                           "Und" = "Other"),
+         flip = case_when((file_party == "Republican" & response == "Democratic") ~ TRUE,
+                          (file_party == "Democratic" & response == "Republican") ~ TRUE)) %>% 
+  group_by(source, file_party) %>% 
+  count(flip) %>% 
+  group_by(source) %>% 
+  mutate(total = sum(n),
+         state = toupper(str_sub(source, 1, 2)),
+         wave = str_sub(source, -1, -1)) %>% 
+  group_by(source, file_party) %>% 
+  mutate(rep_per = n / total) %>%
+  filter(flip == TRUE)
+
+## looking at the file party vs the response for the governor election to check for
+## any flips in response. 
+flipped_gov <- upshot_gov %>% 
+  select(source, file_party, response) %>% 
+  mutate(response = recode(response, 
+                           "Dem" = "Democratic",
+                           "Rep" = "Republican",
+                           "Und" = "Other"),
+         flip = case_when((file_party == "Republican" & response == "Democratic") ~ TRUE,
+                          (file_party == "Democratic" & response == "Republican") ~ TRUE)) %>% 
+  group_by(source, file_party) %>% 
+  count(flip) %>% 
+  group_by(source) %>% 
+  mutate(total = sum(n),
+         state = toupper(str_sub(source, 1, 2)),
+         wave = str_sub(source, -1, -1)) %>% 
+  group_by(source, file_party) %>% 
+  mutate(rep_per = n / total) %>%
+  filter(flip == TRUE)
+
+write_rds(flipped_hou, "visual_weighting/flips_hou.rds")
+write_rds(flipped_sen, "visual_weighting/flips_sen.rds")
+write_rds(flipped_gov, "visual_weighting/flips_gov.rds")
 
 
