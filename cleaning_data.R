@@ -54,7 +54,7 @@ flipped_hou <- upshot_hou %>%
          district = paste0(state, "-", parse_number(str_sub(source, 2, 4))),
          wave = str_sub(source, -1, -1)) %>% 
   group_by(source, file_party) %>% 
-  mutate(rep_per = n / total) %>% 
+  mutate(vot_per = n / total) %>% 
   filter(flip == TRUE) 
 
 ## looking at the file party vs the response for the senate election to check for
@@ -74,7 +74,7 @@ flipped_sen <- upshot_sen %>%
          state = toupper(str_sub(source, 1, 2)),
          wave = str_sub(source, -1, -1)) %>% 
   group_by(source, file_party) %>% 
-  mutate(rep_per = n / total) %>%
+  mutate(vot_per = n / total) %>%
   filter(flip == TRUE)
 
 ## looking at the file party vs the response for the governor election to check for
@@ -94,11 +94,9 @@ flipped_gov <- upshot_gov %>%
          state = toupper(str_sub(source, 1, 2)),
          wave = str_sub(source, -1, -1)) %>% 
   group_by(source, file_party) %>% 
-  mutate(rep_per = n / total) %>%
+  mutate(vot_per = n / total) %>%
   filter(flip == TRUE)
 
 write_rds(flipped_hou, "visual_weighting/flips_hou.rds")
 write_rds(flipped_sen, "visual_weighting/flips_sen.rds")
 write_rds(flipped_gov, "visual_weighting/flips_gov.rds")
-
-
