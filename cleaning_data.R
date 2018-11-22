@@ -5,16 +5,15 @@ library(dplyr)
 library(stringr)
 library(ggplot2)
 
-# ### TEMP COMMENT SO FILES AREN'T REDOWNLOADED
-# # getting upshot data
-# download.file(url = "https://goo.gl/ZRCBda",
-#               destfile = "upshot.zip",
-#               quiet = TRUE,
-#               mode = "wb")
-# unzip("upshot.zip")
-# 
-# # deleting upshot.zip once data loaded
-# file_delete("upshot.zip")
+# getting upshot data
+download.file(url = "https://goo.gl/ZRCBda",
+              destfile = "upshot.zip",
+              quiet = TRUE,
+              mode = "wb")
+unzip("upshot.zip")
+
+# deleting upshot.zip once data loaded
+file_delete("upshot.zip")
 
 
 ### consolidating upshot data (code taken from my midterm 2)
